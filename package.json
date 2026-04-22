@@ -1,0 +1,12 @@
+{
+  "name": "ahmed-website",
+  "version": "1.0.0",
+  "description": "Ahmed - Discord Bot Developer Portfolio",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev":   "node server.js"
+  },
+  "keywords": ["discord", "portfolio", "bot-developer"],
+  "author": "Ahmed"
+}

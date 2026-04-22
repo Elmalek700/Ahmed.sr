@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AHMED | Discord Bot Developer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* SVG icon system */
+        .ico { display:inline-flex; align-items:center; justify-content:center; vertical-align:middle; flex-shrink:0; }
+        .ico svg { width:1em; height:1em; fill:currentColor; }
+    </style>
+    <style>
+        :root {
+            --blurple: #5865F2;
+            --blurple-glow: rgba(88,101,242,0.35);
+            --accent: #00d2ff;
+            --accent-glow: rgba(0,210,255,0.25);
+            --red: #ff4757;
+            --bg: #07080f;
+            --card: #0e0f1c;
+            --card2: #111220;
+            --border: rgba(255,255,255,0.06);
+            --gray: #8b8fa8;
+            --white: #e8eaf6;
+            --green: #57f287;
+        }
+
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            background: var(--bg);
+            color: var(--white);
+            font-family: 'Cairo', sans-serif;
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        /* ─── NOISE TEXTURE ─── */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.4;
+        }
+
+        /* ─── GLOW ORBS ─── */
+        .orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(120px);
+            pointer-events: none;
+            z-index: 0;
+            animation: floatOrb 12s ease-in-out infinite;
+        }
+        .orb-1 { width: 500px; height: 500px; background: var(--blurple-glow); top: -100px; right: -100px; }
+        .orb-2 { width: 350px; height: 350px; background: var(--accent-glow); bottom: 10%; left: -80px; animation-delay: -6s; }
+        @keyframes floatOrb {
+            0%,100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-30px) scale(1.05); }
+        }
+
+        .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+
+        /* ─── NAV ─── */
+        nav {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 1.2rem 5%;
+            background: rgba(7,8,15,0.75);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            position: sticky; top: 0; z-index: 100;
+            border-bottom: 1px solid var(--border);
+        }
+        .logo {
+            font-family: 'Space Mono', monospace;
+            font-size: 1.4rem; font-weight: 700;
+            background: linear-gradient(135deg, var(--accent), var(--blurple));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            letter-spacing: 2px;
+        }
+        .nav-links { display: flex; gap: 12px; align-items: center; }
+        .nav-links a {
+            color: var(--gray); text-decoration: none;
+            font-size: 0.85rem; font-weight: 600;
+            padding: 7px 16px; border-radius: 8px;
+            transition: all 0.3s;
+            border: 1px solid transparent;
+        }
+        .nav-links a:hover { color: white; background: rgba(255,255,255,0.05); border-color: var(--border); }
+        .nav-discord {
+            background: var(--blurple) !important;
+            color: white !important;
+            border-color: transparent !important;
+            display: flex; align-items: center; gap: 7px;
+        }
+        .nav-discord:hover { filter: brightness(1.15); }
+        .nav-discord i { font-size: 1rem; }
+
+        /* ─── HERO ─── */
+        .hero {
+            min-height: 88vh;
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            text-align: center;
+            padding: 80px 20px 60px;
+        }
+        .hero-badge {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: rgba(88,101,242,0.12);
+            border: 1px solid rgba(88,101,242,0.3);
+            padding: 6px 18px; border-radius: 50px;
+            font-size: 0.82rem; color: #a5b4fc;
+            margin-bottom: 28px;
+            animation: fadeUp 0.8s ease both;
+        }
+        .hero-badge i { color: var(--blurple); animation: pulse 2s infinite; }
+        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+        .hero h1 {
+            font-size: clamp(2.4rem, 6vw, 4.5rem);
+            font-weight: 900;
+            line-height: 1.2;
+            margin-bottom: 20px;
+            animation: fadeUp 0.8s 0.1s ease both;
+        }
+        .hero h1 span {
+            background: linear-gradient(135deg, #fff 30%, var(--accent));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .hero h1 .highlight {
+            background: linear-gradient(135deg, var(--blurple), var(--accent));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            position: relative;
+        }
+
+        .hero-desc {
+            color: var(--gray); font-size: 1.1rem;
+            max-width: 620px; margin-bottom: 40px;
+            animation: fadeUp 0.8s 0.2s ease both;
+        }
+
+        .hero-cta {
+            display: flex; gap: 14px; flex-wrap: wrap; justify-content: center;
+            animation: fadeUp 0.8s 0.3s ease both;
+        }
+        .btn-primary {
+            background: var(--blurple);
+            color: white; text-decoration: none;
+            padding: 13px 30px; border-radius: 10px;
+            font-weight: 700; font-size: 0.95rem;
+            display: inline-flex; align-items: center; gap: 9px;
+            transition: all 0.3s;
+            box-shadow: 0 4px 20px var(--blurple-glow);
+        }
+        .btn-primary:hover { transform: translateY(-3px); filter: brightness(1.15); box-shadow: 0 8px 30px var(--blurple-glow); }
+        .btn-secondary {
+            background: transparent;
+            color: white; text-decoration: none;
+            padding: 13px 30px; border-radius: 10px;
+            font-weight: 700; font-size: 0.95rem;
+            border: 1px solid var(--border);
+            display: inline-flex; align-items: center; gap: 9px;
+            transition: all 0.3s;
+        }
+        .btn-secondary:hover { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.15); transform: translateY(-3px); }
+
+        /* Stats row */
+        .hero-stats { display: none; }
+
+        /* scroll indicator */
+        .scroll-hint {
+            position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
+            display: flex; flex-direction: column; align-items: center; gap: 6px;
+            color: var(--gray); font-size: 0.7rem;
+            animation: bounce 2s infinite;
+        }
+        @keyframes bounce { 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(8px)} }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(24px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ─── SECTION TITLE ─── */
+        .sec-title {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+        .sec-tag {
+            display: inline-block;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.72rem; font-weight: 700;
+            letter-spacing: 3px;
+            color: var(--accent);
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+        .sec-title h2 {
+            font-size: clamp(1.8rem, 4vw, 2.8rem);
+            font-weight: 900;
+        }
+        .sec-title p { color: var(--gray); max-width: 500px; margin: 10px auto 0; font-size: 0.95rem; }
+
+        /* ─── SKILLS PILLS ─── */
+        .pills {
+            display: flex; gap: 12px; flex-wrap: wrap;
+            justify-content: center; margin-bottom: 90px;
+        }
+        .pill {
+            background: var(--card2);
+            border: 1px solid var(--border);
+            padding: 10px 22px; border-radius: 50px;
+            font-weight: 700; font-size: 0.88rem;
+            display: flex; align-items: center; gap: 9px;
+            transition: all 0.3s;
+            cursor: default;
+        }
+        .pill:hover { border-color: var(--blurple); background: rgba(88,101,242,0.08); transform: translateY(-2px); }
+        .pill i { font-size: 1rem; }
+        .pill .i-node { color: #68a063; }
+        .pill .i-mongo { color: #47a248; }
+        .pill .i-js { color: #f7df1e; }
+        .pill .i-discord { color: var(--blurple); }
+        .pill .i-rest { color: var(--accent); }
+        .pill .i-html { color: #e34f26; }
+        .pill .i-css { color: #1572b6; }
+        .pill .i-git { color: #f05032; }
+
+        /* ─── BOTS GRID ─── */
+        .bots-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 28px; margin-bottom: 100px; }
+
+        .bot-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 2.2rem;
+            position: relative;
+            transition: all 0.4s cubic-bezier(0.23,1,0.32,1);
+            overflow: hidden;
+        }
+        .bot-card::before {
+            content: '';
+            position: absolute; top: 0; left: 0; right: 0; height: 3px;
+            background: linear-gradient(90deg, var(--blurple), var(--accent));
+        }
+        .bot-card.red::before { background: linear-gradient(90deg, var(--red), #ff6b81); }
+
+        .bot-card::after {
+            content: '';
+            position: absolute; inset: 0;
+            background: radial-gradient(circle at 80% 20%, rgba(88,101,242,0.05), transparent 60%);
+            pointer-events: none;
+        }
+        .bot-card.red::after { background: radial-gradient(circle at 80% 20%, rgba(255,71,87,0.05), transparent 60%); }
+
+        .bot-card:hover {
+            transform: translateY(-10px);
+            border-color: rgba(88,101,242,0.4);
+            box-shadow: 0 20px 50px rgba(88,101,242,0.1);
+        }
+        .bot-card.red:hover { border-color: rgba(255,71,87,0.4); box-shadow: 0 20px 50px rgba(255,71,87,0.1); }
+
+        .bot-header { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; }
+
+        .bot-avatar {
+            width: 72px; height: 72px; border-radius: 18px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.8rem; flex-shrink: 0;
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            box-shadow: 0 8px 20px rgba(88,101,242,0.3);
+            position: relative;
+        }
+        .bot-avatar.red-av { background: linear-gradient(135deg, #7f0000, #ff4757); box-shadow: 0 8px 20px rgba(255,71,87,0.3); }
+
+        .online-dot {
+            position: absolute; bottom: 4px; right: 4px;
+            width: 14px; height: 14px; border-radius: 50%;
+            background: var(--green);
+            border: 2px solid var(--card);
+            animation: pulse 2.5s infinite;
+        }
+
+        .bot-name { font-size: 1.6rem; font-weight: 900; }
+        .bot-tag {
+            font-size: 0.72rem; font-weight: 700; font-family: 'Space Mono', monospace;
+            color: var(--blurple); background: rgba(88,101,242,0.1);
+            border: 1px solid rgba(88,101,242,0.2);
+            padding: 3px 10px; border-radius: 6px; display: inline-block; margin-top: 4px;
+            letter-spacing: 1px;
+        }
+        .bot-tag.red-tag { color: var(--red); background: rgba(255,71,87,0.1); border-color: rgba(255,71,87,0.2); }
+
+        .bot-desc { color: var(--gray); font-size: 0.92rem; margin-bottom: 22px; line-height: 1.75; }
+
+        .bot-features { display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; }
+        .feature-item {
+            display: flex; align-items: center; gap: 10px;
+            font-size: 0.88rem; color: #c8cbe0;
+        }
+        .feature-item i { width: 18px; text-align: center; color: var(--blurple); flex-shrink: 0; }
+        .feature-item.red-f i { color: var(--red); }
+
+        .bot-footer { display: flex; gap: 10px; align-items: center; justify-content: space-between; border-top: 1px solid var(--border); padding-top: 18px; margin-top: 4px; }
+
+        .bot-stat { font-size: 0.78rem; color: var(--gray); display: flex; align-items: center; gap: 5px; }
+        .bot-stat i { color: var(--accent); }
+        .bot-stat.red-s i { color: var(--red); }
+
+        .btn-bot {
+            background: var(--blurple);
+            color: white; text-decoration: none;
+            padding: 9px 20px; border-radius: 8px;
+            font-weight: 700; font-size: 0.83rem;
+            display: inline-flex; align-items: center; gap: 7px;
+            transition: all 0.3s; white-space: nowrap;
+        }
+        .btn-bot:hover { filter: brightness(1.2); transform: scale(1.03); }
+        .btn-bot.red-btn { background: var(--red); }
+
+        /* ─── ABOUT / SKILLS SECTION ─── */
+        .skills-section {
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 40px; margin-bottom: 100px;
+            align-items: center;
+        }
+        @media(max-width: 768px) { .skills-section { grid-template-columns: 1fr; } }
+
+        .about-text h3 { font-size: 1.9rem; font-weight: 900; margin-bottom: 16px; }
+        .about-text p { color: var(--gray); font-size: 0.95rem; margin-bottom: 12px; }
+
+        .skill-bars { display: flex; flex-direction: column; gap: 18px; }
+        .skill-bar-item {}
+        .skill-bar-top { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.88rem; font-weight: 700; }
+        .skill-bar-top span:last-child { color: var(--accent); font-family: 'Space Mono', monospace; }
+        .bar-bg { background: rgba(255,255,255,0.05); border-radius: 50px; height: 8px; overflow: hidden; }
+        .bar-fill {
+            height: 100%; border-radius: 50px;
+            background: linear-gradient(90deg, var(--blurple), var(--accent));
+            animation: fillBar 1.5s ease-out forwards;
+            transform-origin: left;
+        }
+        .bar-fill.red { background: linear-gradient(90deg, var(--red), #ff9f43); }
+        @keyframes fillBar { from { width: 0 !important; } }
+
+        /* ─── TECH TAGS GRID ─── */
+        .tech-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 14px; margin-bottom: 100px; }
+        .tech-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 20px 14px;
+            text-align: center;
+            transition: all 0.3s;
+            cursor: default;
+        }
+        .tech-card:hover { border-color: var(--blurple); background: rgba(88,101,242,0.06); transform: translateY(-4px); }
+        .tech-card .tech-icon { font-size: 1.8rem; margin-bottom: 10px; display: flex; justify-content:center; }
+        .tech-card span { font-size: 0.82rem; font-weight: 700; color: var(--gray); }
+
+        /* ─── FOOTER ─── */
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 50px 20px;
+            text-align: center;
+        }
+        .footer-logo {
+            font-family: 'Space Mono', monospace;
+            font-size: 1.6rem; font-weight: 700;
+            background: linear-gradient(135deg, var(--accent), var(--blurple));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            margin-bottom: 16px;
+        }
+        .footer-links { display: flex; gap: 16px; justify-content: center; margin: 20px 0; }
+        .footer-links a {
+            width: 40px; height: 40px; border-radius: 10px;
+            background: var(--card); border: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: center;
+            color: var(--gray); font-size: 1rem; text-decoration: none;
+            transition: all 0.3s;
+        }
+        .footer-links a:hover { color: white; border-color: var(--blurple); background: rgba(88,101,242,0.1); transform: translateY(-3px); }
+        .footer-copy { color: var(--gray); font-size: 0.83rem; }
+
+        /* ─── RESPONSIVE ─── */
+        @media(max-width: 600px) {
+            .hero-stats { gap: 24px; }
+            .stat-num { font-size: 1.5rem; }
+            .bots-grid { grid-template-columns: 1fr; }
+        }
+
+        /* ─── SECTION SPACING ─── */
+        section { position: relative; z-index: 1; }
+        .pt { padding-top: 80px; }
+    </style>
+</head>
+<body>
+
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+
+    <!-- NAV -->
+    <nav>
+        <div class="logo">AHMED.</div>
+        <div class="nav-links">
+            <a href="#bots">🤖 البوتات</a>
+            <a href="#skills">💻 المهارات</a>
+            <a id="link-nav-discord" href="#" class="nav-discord">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057.1 18.11.127 18.16.168 18.19a19.9 19.9 0 0 0 5.993 3.03.077.077 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+                ديسكورد
+            </a>
+        </div>
+    </nav>
+
+    <div class="container">
+
+        <!-- HERO -->
+        <section class="hero" style="position:relative;">
+            <div class="hero-badge">
+                ✅ متاح للعمل الآن · Available for work
+            </div>
+            <h1>
+                <span>خبير تطوير</span><br>
+                <span class="highlight">بوتات ديسكورد</span>
+            </h1>
+            <p class="hero-desc">
+                أقوم ببرمجة حلول متقدمة، أنظمة حماية، وأنظمة إدارية متكاملة لسيرفرات الديسكورد باستخدام <strong>JavaScript</strong> و <strong>Node.js</strong>.
+            </p>
+            <div class="hero-cta">
+                <a href="#bots" class="btn-primary">🤖 شوف أعمالي</a>
+                <a id="link-hero-discord" href="#" class="btn-secondary">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057.1 18.11.127 18.16.168 18.19a19.9 19.9 0 0 0 5.993 3.03.077.077 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+                    تواصل معي
+                </a>
+            </div>
+
+            <div class="scroll-hint">↓</div>
+        </section>
+
+        <!-- SKILLS PILLS -->
+        <section id="skills">
+            <div class="sec-title">
+                <span class="sec-tag">🔧 Tech Stack</span>
+                <h2>المهارات البرمجية</h2>
+                <p>التقنيات والأدوات التي أستخدمها في تطوير بوتات الديسكورد</p>
+            </div>
+            <div class="pills">
+                <div class="pill"><span style="color:#68a063;font-size:1.1rem;">⬡</span> Node.js</div>
+                <div class="pill"><span style="color:#f7df1e;">JS</span> JavaScript</div>
+                <div class="pill">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="#5865F2"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057.1 18.11.127 18.16.168 18.19a19.9 19.9 0 0 0 5.993 3.03.077.077 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+                    Discord.js
+                </div>
+                <div class="pill"><span style="color:#47a248;">🗄</span> MongoDB</div>
+                <div class="pill"><span style="color:#00d2ff;">⚡</span> REST APIs</div>
+                <div class="pill"><span style="color:#e34f26;">🌐</span> HTML5</div>
+                <div class="pill"><span style="color:#1572b6;">🎨</span> CSS3</div>
+                <div class="pill"><span style="color:#f05032;">⑂</span> Git</div>
+            </div>
+        </section>
+
+        <!-- BOTS -->
+        <section id="bots" class="pt">
+            <div class="sec-title">
+                <span class="sec-tag">🤖 Projects</span>
+                <h2>مشاريع البوتات</h2>
+                <p>بوتات احترافية مبرمجة من الصفر بأفضل المعايير</p>
+            </div>
+            <div class="bots-grid">
+
+                <!-- ARAB BOT -->
+                <div class="bot-card">
+                    <div class="bot-header">
+                        <div class="bot-avatar">
+                            🤖
+                            <span class="online-dot"></span>
+                        </div>
+                        <div>
+                            <div class="bot-name">Arab Bot</div>
+                            <span class="bot-tag">🟢 ONLINE</span>
+                        </div>
+                    </div>
+                    <p class="bot-desc">بوت عربي متكامل يقدم خدمات الإدارة، الحماية، والألعاب التفاعلية. مصمم ليكون الأسرع والأكثر استقراراً في السيرفرات العربية.</p>
+                    <div class="bot-features">
+                        <div class="feature-item">🛡️ نظام حماية متقدم Anti-Raid</div>
+                        <div class="feature-item">⚖️ أوامر إدارية شاملة</div>
+                        <div class="feature-item">🎮 ألعاب تفاعلية مع نظام XP</div>
+                        <div class="feature-item">🎵 موسيقى عالية الجودة</div>
+                    </div>
+                    <div class="bot-footer">
+                        <div style="display:flex;gap:16px;">
+                            <div class="bot-stat">🖥️ +500 سيرفر</div>
+                            <div class="bot-stat">👥 +30K مستخدم</div>
+                        </div>
+                        <a id="link-arabbot-invite" href="#" class="btn-bot" target="_blank" rel="noopener">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057.1 18.11.127 18.16.168 18.19a19.9 19.9 0 0 0 5.993 3.03.077.077 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+                            إضافة البوت
+                        </a>
+                    </div>
+                </div>
+
+                <!-- CYRIX -->
+                <div class="bot-card red">
+                    <div class="bot-header">
+                        <div class="bot-avatar red-av">
+                            🛡️
+                            <span class="online-dot"></span>
+                        </div>
+                        <div>
+                            <div class="bot-name">Cyrix</div>
+                            <span class="bot-tag red-tag">🔴 ACTIVE</span>
+                        </div>
+                    </div>
+                    <p class="bot-desc">بوت متخصص في أنظمة الـ Cyber Security والحماية المتقدمة. يوفر سجلات دقيقة ونظام كشف الاختراقات التلقائي في الوقت الفعلي.</p>
+                    <div class="bot-features">
+                        <div class="feature-item red-f">👁️ سجلات Logs تفصيلية لكل حدث</div>
+                        <div class="feature-item red-f">🐛 كشف الاختراقات تلقائياً</div>
+                        <div class="feature-item red-f">🚫 حماية ضد الإسباميرز والرايد</div>
+                        <div class="feature-item red-f">📊 إحصائيات أمنية مباشرة</div>
+                    </div>
+                    <div class="bot-footer">
+                        <div style="display:flex;gap:16px;">
+                            <div class="bot-stat red-s">🔒 Secured</div>
+                            <div class="bot-stat red-s">⚡ Real-time</div>
+                        </div>
+                        <a id="link-cyrix-preview" href="#" class="btn-bot red-btn" target="_blank" rel="noopener">🛡️ معاينة النظام</a>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- TECH CARDS -->
+        <section class="pt">
+            <div class="sec-title">
+                <span class="sec-tag">⚙️ Technologies</span>
+                <h2>التقنيات المستخدمة</h2>
+            </div>
+            <div class="tech-grid">
+                <div class="tech-card"><div class="tech-icon" style="color:#68a063;">
+                    <svg viewBox="0 0 24 24" width="40" height="40" fill="#68a063"><path d="M11.998 24c-.321 0-.641-.084-.924-.253L8.1 22.134c-.437-.244-.224-.331-.079-.381.545-.19.655-.233 1.236-.562.061-.035.141-.021.204.014l2.303 1.369c.084.047.2.047.28 0l8.973-5.184c.084-.049.138-.146.138-.245V7.85c0-.1-.054-.199-.14-.251l-8.97-5.178c-.084-.047-.196-.047-.278 0L2.779 7.601c-.087.05-.141.15-.141.251v10.366c0 .099.054.196.139.244l2.460 1.422c1.336.668 2.152-.119 2.152-.912V8.297c0-.145.116-.26.26-.26h1.138c.141 0 .258.115.258.26v10.675c0 1.784-1.009 2.806-2.692 2.806-.525 0-.939 0-2.092-.569l-2.360-1.362C.524 19.394 0 18.484 0 17.517V7.15c0-.968.524-1.878 1.372-2.33l8.972-5.184c.827-.478 1.927-.478 2.748 0l8.973 5.184c.848.452 1.372 1.362 1.372 2.33v10.367c0 .967-.524 1.877-1.372 2.33l-8.973 5.184a1.859 1.859 0 0 1-.924.253"/></svg>
+                </div><span>Node.js</span></div>
+
+                <div class="tech-card"><div class="tech-icon">
+                    <svg viewBox="0 0 24 24" width="40" height="40" fill="#f7df1e"><path d="M0 0h24v24H0V0zm22.034 18.276c-.175-1.095-.888-2.015-3.003-2.873-.736-.345-1.554-.585-1.797-1.14-.091-.33-.105-.51-.046-.705.15-.646.915-.84 1.515-.66.39.12.75.42.976.9 1.034-.676 1.034-.676 1.755-1.125-.27-.42-.404-.601-.586-.78-.63-.705-1.469-1.065-2.834-1.034l-.705.089c-.676.165-1.32.525-1.71 1.005-1.14 1.291-.811 3.541.569 4.471 1.365 1.02 3.361 1.244 3.616 2.205.24 1.17-.87 1.545-1.966 1.41-.811-.18-1.26-.586-1.755-1.336l-1.83 1.051c.21.48.45.689.81 1.109 1.74 1.756 6.09 1.666 6.871-1.004.029-.09.24-.705.074-1.65l.046.067zm-8.983-7.245h-2.248c0 1.938-.009 3.864-.009 5.805 0 1.232.063 2.363-.138 2.711-.33.689-1.18.601-1.566.48-.396-.196-.597-.466-.83-.855-.063-.105-.11-.196-.127-.196l-1.825 1.125c.305.63.75 1.172 1.324 1.517.855.51 2.004.675 3.207.405.783-.226 1.458-.691 1.811-1.411.51-.93.402-2.07.397-3.346.012-2.054 0-4.109 0-6.179l.004-.056z"/></svg>
+                </div><span>JavaScript</span></div>
+
+                <div class="tech-card"><div class="tech-icon">
+                    <svg viewBox="0 0 24 24" width="40" height="40" fill="#5865F2"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057.1 18.11.127 18.16.168 18.19a19.9 19.9 0 0 0 5.993 3.03.077.077 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+                </div><span>Discord.js</span></div>
+
+                <div class="tech-card"><div class="tech-icon">
+                    <svg viewBox="0 0 24 24" width="40" height="40" fill="#47a248"><path d="M17.193 9.555c-1.264-5.58-4.252-7.243-4.798-8.053-.544-.809-.978-1.702-1.093-1.94l-.02-.04-.032.018C9.299.753 7.538 3.inconnu 5.943 9.504c-1.046 4.236-.62 6.861.154 8.579.899 2.007 2.354 3.317 3.773 3.317.302 0 .606-.06.9-.186.358.134.728.2 1.104.2 1.047 0 2.089-.53 2.892-1.406.812-.87 1.296-2.028 1.296-3.218 0-.47-.087-.937-.27-1.404-.06-.157-.133-.318-.215-.48.03-.012.06-.025.09-.04.568-.266.972-.665 1.138-1.124a2.06 2.06 0 0 0-.512-2.19zM12 21.593c-.382 0-.76-.07-1.115-.202-.043-.017-.086-.034-.13-.048.048-.025.096-.052.143-.08.85-.504 1.69-1.363 2.304-2.43.032-.055.062-.11.09-.167a4.6 4.6 0 0 0 .28-.748c.04-.143.072-.288.097-.433.135-.037.27-.077.4-.122.047.163.087.33.118.5.19 1.065-.097 2.125-.763 2.925-.502.59-1.147.805-1.424.805z"/></svg>
+                </div><span>MongoDB</span></div>
+
+                <div class="tech-card"><div class="tech-icon">
+                    <svg viewBox="0 0 24 24" width="40" height="40" fill="#e34f26"><path d="M1.5 0h21l-1.91 21.563L11.977 24l-8.564-2.438L1.5 0zm7.031 9.75l-.232-2.718 10.059.003.23-2.622L5.412 4.41l.698 8.01h9.126l-.326 3.426-2.91.804-2.955-.81-.188-2.11H6.248l.33 4.171L12 19.351l5.379-1.443.744-8.157H8.531z"/></svg>
+                </div><span>HTML5</span></div>
+
+                <div class="tech-card"><div class="tech-icon">
+                    <svg viewBox="0 0 24 24" width="40" height="40" fill="#1572b6"><path d="M1.5 0h21l-1.91 21.563L11.977 24l-8.565-2.438L1.5 0zm17.09 4.413L5.41 4.41l.213 2.622 10.125.002-.255 2.716h-6.64l.24 2.573h6.182l-.366 3.523-2.91.804-2.956-.81-.188-2.11h-2.61l.29 3.855L12 19.288l5.373-1.53L18.59 4.414v-.001z"/></svg>
+                </div><span>CSS3</span></div>
+
+                <div class="tech-card"><div class="tech-icon">
+                    <svg viewBox="0 0 24 24" width="40" height="40" fill="#f05032"><path d="M23.546 10.93L13.067.452a1.55 1.55 0 0 0-2.188 0L8.708 2.627l2.76 2.76a1.838 1.838 0 0 1 2.327 2.341l2.658 2.66a1.838 1.838 0 0 1 1.9 3.039 1.837 1.837 0 0 1-2.634-2.sought.818l-2.48-2.48v6.522a1.838 1.838 0 0 1 .485 3.608 1.838 1.838 0 0 1-2.291-1.819 1.836 1.836 0 0 1 .996-1.628V8.897a1.838 1.838 0 0 1-.996-2.54L8.393 3.6 .45 11.544a1.55 1.55 0 0 0 0 2.188l10.48 10.478a1.55 1.55 0 0 0 2.189 0l10.428-10.43a1.55 1.55 0 0 0 0-2.188z"/></svg>
+                </div><span>Git</span></div>
+
+                <div class="tech-card"><div class="tech-icon" style="font-size:2.2rem;">⚡</div><span>REST API</span></div>
+            </div>
+        </section>
+
+    </div><!-- /container -->
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-logo">AHMED.</div>
+        <p style="color:var(--gray);font-size:0.9rem;margin-bottom:8px;">مبرمج بوتات ديسكورد متخصص · Discord Bot Developer</p>
+        <div class="footer-links">
+            <a id="link-footer-discord" href="#" title="Discord" target="_blank" rel="noopener">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057.1 18.11.127 18.16.168 18.19a19.9 19.9 0 0 0 5.993 3.03.077.077 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+            </a>
+            <a id="link-footer-portfolio" href="https://solosnow.online" title="Portfolio" target="_blank" rel="noopener">🌐</a>
+            <a id="link-footer-github" href="#" title="GitHub" target="_blank" rel="noopener">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+            </a>
+            <a id="link-footer-twitter" href="#" title="Twitter" target="_blank" rel="noopener">𝕏</a>
+        </div>
+        <p class="footer-copy">© 2026 تم التطوير بواسطة <strong>AHMED</strong> · جميع الحقوق محفوظة</p>
+    </footer>
+
+    <!-- ===== CONFIG LOADER ===== -->
+    <script>
+        fetch('config.json')
+            .then(r => r.json())
+            .then(cfg => {
+                const L = cfg.links;
+
+                // ── Discord (nav + hero + footer)
+                const discordHref = L.discord || '#';
+                ['link-nav-discord', 'link-hero-discord', 'link-footer-discord'].forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) el.href = discordHref;
+                });
+
+                // ── GitHub
+                const ghEl = document.getElementById('link-footer-github');
+                if (ghEl && L.github) ghEl.href = L.github;
+
+                // ── Twitter / X
+                const twEl = document.getElementById('link-footer-twitter');
+                if (twEl && L.twitter) twEl.href = L.twitter;
+
+                // ── Portfolio
+                const pfEl = document.getElementById('link-footer-portfolio');
+                if (pfEl && L.portfolio) pfEl.href = L.portfolio;
+
+                // ── Bots
+                if (L.bots) {
+                    const arabInvite = document.getElementById('link-arabbot-invite');
+                    if (arabInvite && L.bots.arabBot && L.bots.arabBot.invite)
+                        arabInvite.href = L.bots.arabBot.invite;
+
+                    const cyrixPreview = document.getElementById('link-cyrix-preview');
+                    if (cyrixPreview && L.bots.cyrix && L.bots.cyrix.preview)
+                        cyrixPreview.href = L.bots.cyrix.preview;
+                }
+            })
+            .catch(() => console.warn('config.json not loaded – using fallback links'));
+    </script>
+</body>
+</html>

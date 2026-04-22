@@ -1,0 +1,19 @@
+{
+  "links": {
+    "discord": "https://discord.gg/YOUR_INVITE_HERE",
+    "github": "https://github.com/YOUR_USERNAME",
+    "twitter": "https://twitter.com/YOUR_USERNAME",
+    "portfolio": "https://solosnow.online",
+
+    "bots": {
+      "arabBot": {
+        "invite": "https://discord.com/oauth2/authorize?client_id=YOUR_BOT_ID&scope=bot&permissions=8",
+        "preview": ""
+      },
+      "cyrix": {
+        "invite": "",
+        "preview": "https://YOUR_CYRIX_PREVIEW_LINK"
+      }
+    }
+  }
+}
